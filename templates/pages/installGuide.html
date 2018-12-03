@@ -1,0 +1,1259 @@
+{% extends '../hasSearchBox.html' %}
+{% block content %}
+
+<script language="JavaScript" type="text/javascript"
+        src="https://kjur.github.io/jsrsasign/jsrsasign-latest-all-min.js">
+</script>
+
+<style>
+
+@media print {
+    /* styles for printing the page go here */
+    #my-footer, #my-header, .install-wizard{
+     display: none;
+    }
+    .install-step{
+        page-break-before: always;
+    }
+    pre {
+        background-color: rgb(245, 245, 245) !important;
+	}
+	pre code, code{
+        background-color: rgb(248, 248, 248) !important;
+	}
+	
+    .projectoverview, .projectplan, .installation{
+        page-break-before: always;
+    }
+    
+    @page {margin: 2 2.1cm 0 2.1cm}
+    
+    #header, #footer { display: none !important; }
+    
+    /*@page {padding: 2cm 0 2cm 0}*/
+    
+    /*
+    #my-content {
+        margin-top: 2cm ;
+        margin-bottom: 2cm ;
+    }
+    */
+}
+
+
+
+.install-wizard{
+    border-radius: 5px;
+    border: 2px solid #999999;
+    padding:0px 20px 20px 20px;
+}
+
+.toc{
+    border-radius: 5px;
+    border: 2px solid #999999;
+    padding:0px 20px 20px 20px;
+}
+
+.singleSideReward, .doubleSideReward, .install-guide-hidden, .exampleUserLocale, .exampleUserJWT, .exampleUserJWT_hosted{
+    display:none;
+}
+
+/*code {*/
+/*    background-color: #fefbed;*/
+/*    border-color: #f1e7bc;*/
+/*    border: 1px;*/
+/*}*/
+
+#toc_div ul > li{
+    font-size:16px;
+}
+
+/*
+.exampleUserTenantAlias{
+    display:none;
+}
+*/
+</style>
+
+<section class="article-content">
+  
+    <div class="install-wizard">
+        <h3>Configure your Install Guide</h3>
+        
+        <p>Use the following wizard to build a custom install guide for your SaaSquatch program.</p>
+        
+        <form action="" method="get">
+            Business Model: <select id="businessModel" name="businessModel">
+                <option value="ondemand">On-Demand Services</option>
+                <option value="subserv">Subscription Services</option>
+                <option value="subbox">Subscription Boxes</option>
+                <option value="onlinemarket">Online Marketplaces</option>
+                <option value="other">Other</option>
+            </select>
+            
+            <br>
+            
+            <div class="row-fluid">
+                <div class="span4">
+                    
+                    Referred User Reward Fulfillment Method: <select id="referredUserfulfillmentMethod" name="referredUserfulfillmentMethod">
+                        <option value="giftcard">Gift Card Integration</option>
+                        <option value="export">CSV Export</option>
+                        <option value="paymentProvider">Payment Provider</option>
+                        <option value="fueltankbeforesignup">Reward Code Fueltank - At Checkout</option>
+                        <option value="apibeforesignup">Account Credit - At checkout</option>
+                        <option value="apiaftersignup">Account Credit - After signup</option>
+                        <option value="none">None</option>
+                    </select>
+                    
+                </div>
+                <div class="span4">
+                    
+                    Referrer Reward Fulfillment Method: <select id="referrerFulfillmentMethod" name="referrerFulfillmentMethod">
+                        <option value="giftcard">Gift Card Integration</option>
+                        <option value="export">CSV Export</option>
+                        <option value="paymentProvider">Payment Provider</option>
+                        <option value="fueltank">Reward Code Fueltank</option>
+                        <option value="api">API/Webhooks</option>
+                        <option value="none">None</option>
+                    </select>
+                    
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            
+            <br>
+            
+            Multiple Locales? <input type="checkbox" id="locale" name="locale" value=locale> <br>
+            
+            Include native Mobile SDK install steps? <input type="checkbox" id="mobileSDK" name="mobileSDK" value=mobileSDK> <br>
+            Include Mobile app Webview widget install steps? <input type="checkbox" id="mobileWebview" name="mobileWebview" value=mobileWebview> <br><br>
+            
+            Include additional optional install steps? <input type="checkbox" id="optionalSteps" name="optionalSteps" value=optionalSteps> <br><br>
+            
+            SaaSquatch test tenant alias: <input type="text" id="tenantAlias" name="tenantAlias"><br><br>
+            SaaSquatch test tenant API key: <input type="text" id="apiKey" name="apiKey"><br><br>
+            
+            <input type="submit" id="wizardBuild" value="Build Guide">
+            
+        </form>
+    </div>
+    
+    <div>
+        
+        <div id="toc_div" class='toc'>
+            
+            <h3>Table of Contents:</h3>
+            
+            <h3>Project Overview</h3>
+            
+            <ul id="toc_overview"></ul>
+            
+            <h3>Project Plan</h3>
+            
+            <ul id="toc_plan"></ul>
+            
+            <h3>Installation Steps</h3>
+            
+            <ol id="toc_install"></ol>
+            
+        </div>
+        
+        
+        
+        
+        
+        <div class="projectoverview">
+            <h3>Project Overview</h3>
+            <p>An overview of the required steps to install your SaaSquatch referral program.
+            
+            <p>Every referral program can be broken down into a number of core topics; Engagement, Identification, Attribution, Conversion, and Fulfilment. These cover the complete referral loop from beginning (user discovery) to end (fulfilling rewards). Learn more about these core topics in our <a href="https://docs.referralsaasquatch.com/success/core-topics/">Success Center</a>.
+
+            <h4>Engagement</h4>
+            
+            <p>The engagement component of the referral process is all about figuring out how to best interact with your existing customers, getting the offer in front of them, and getting them to share out their referral.
+            
+            <p>The SaaSquatch platform includes a number of ways to engage with your existing users to have them share out their unique sharelink.
+            
+            <h5>Engagement Methods</h5>
+            <ul>
+                <li>Placing the Referral Widget on your webpage behind a login to allow your existing users to interact with the referral program. Use the <a href="https://docs.referralsaasquatch.com/developer/squatchjs/v2/">Squatch JS library</a> to load the <a href="http://docs.referralsaasquatch.com/themes/standard/">Referral Widget</a>.</li>
+                <span class="install-guide-hidden mobileSDK" ><li>Use the <a href="https://docs.referralsaasquatch.com/mobile/">Mobile SDK</a> to build your referral program into your native app's brand experience.</li></span>
+                <span class="install-guide-hidden mobileWebview" ><li>Use each user’s personalized URL to load the <a href="https://docs.referralsaasquatch.com/mobile/widget/">Mobile Widget</a> in a webview in your app.</li></span>
+                <li>Send a broadcast email to notify existing customers about the program. Through a bulk import/export, enroll your existing user base in your referral program. Once imported, download the <a href="https://docs.referralsaasquatch.com/features/reports/#user-details-report">User Details Report</a> to get a full list of each user’s unique sharelinks. Import the contents of this CSV file into an email platform, like Mailchimp, to include each users sharelinks in your referral program outreach or regular marketing campaigns.</li>
+            </ul>
+            
+            <h4>Identification & Attribution</h4>
+            <p>When a friend clicks on the unique share link we can redirect them to the signup page on your website. <span class="install-guide-hidden mobileSDK mobileWebview" >Alternatively, if the user is on iOS or Android we can redirect them, using our <a href="http://docs.referralsaasquatch.com/mobile/branch-metrics/">Branch integration</a>, to the app store to install your app. The Branch integration stores the referral code of the person who referred them to easily build the <a href="https://docs.referralsaasquatch.com/success/core-topics/#attribution">referral connection</a>.</span>
+            
+            <p>After the referred user completes your signup process, <a href="https://docs.referralsaasquatch.com/success/core-topics/#identification">identify</a> this Referred User to SaaSquatch. When using the squatch.js JavaScript library, the referral connection will be automatically picked up if they clicked a share link. If you are identifying the Referred User through the API or mobile SDK, be sure to explicitly include the Referrer’s referral code so that the referral is correctly attributed back to the Referrer.
+            
+            <span class="install-guide-hidden paymentProvider" ><p>For programs using either our Stripe or Recurly integrations: include the Referred User’s paymentProviderId to link their saasquatch account with their account in either Recurly or Stripe.</span>
+            
+            <h5>Methods for Identification and Attribution</h5>
+            <ul><li>Use <a href="https://docs.referralsaasquatch.com/developer/squatchjs/v2/">squatch.js</a> to <a href="https://docs.referralsaasquatch.com/success/core-topics/#identification">identify</a> the Referred User to SaaSquatch. This automatically take care of creating the referral connection. (<a href="https://docs.referralsaasquatch.com/success/core-topics/#attribution">Attribution</a>)</li>
+            <li>Use the <a href="http://docs.referralsaasquatch.com/api/">SaaSquatch REST API</a> to <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">Identify the Referred User to SaaSquatch</a> in your back-end. Use the <a href="https://docs.referralsaasquatch.com/developer/squatchjs/v2/reference/#autofill">squatch.js autofill function</a> to pickup the referral code from the cookie in the Referred User’s browser, and include it in the upsert.</li>
+            <span class="install-guide-hidden mobileSDK" ><li>Use the Mobile SDK to register new participants and attribute the referral from within your mobile app</li></span>
+            <span class="install-guide-hidden mobileWebview" ><li>Load the Mobile Hosted Widget URL to register new participants and attribute the referral</li></span>
+            </ul>
+            
+            <h4>Conversion</h4>
+            Once the Referred User hits the goalpost of your referral program, mark them as converted/paid. This will let SaaSquatch know generate the reward for the Referrer (and Referred User if configured to receive a reward at conversion).
+            
+            <span class="install-guide-hidden api fueltank export giftcard" >
+            <h5>Methods for Conversion</h5>
+            <ul><li>By adding the referredBy: { isConverted: true } parameter to the Referred User’s user object:</li>
+                <ul><li>Using <a href="https://docs.referralsaasquatch.com/developer/squatchjs/v2/">Squatch JS</a></li>
+                <li>Through the <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">REST API</a></li>
+                <span class="install-guide-hidden mobileSDK" ><li>Using the <a href="http://docs.referralsaasquatch.com/mobile/">Mobile SDK</a></li></span>
+            </ul>
+            <span class="install-guide-hidden mobileWebview" ><li>Using the <a href="https://docs.referralsaasquatch.com/mobile/widget/">Mobile Widget URL</a> by adding the accountStatus = "PAID" parameter</li></span>
+            <li>Manually through the SaaSquatch Portal by looking up the Referred User and changing their account status to Paid.</li>
+            </ul>
+            </span>
+            
+            <span class="install-guide-hidden paymentProvider" >
+            <h5>Conversion Method</h5>
+            
+            This step is handled automatically through our <a href="https://docs.referralsaasquatch.com/stripe/">Stripe</a> or <a href="https://docs.referralsaasquatch.com/recurly/">Recurly</a> integration:<br>
+
+            SaaSquatch is notified by Stripe/Recurly of closed invoices. When one is detected with a valid referral code as the coupon on the subscription we will convert the referral and generate the reward for the Referrer.
+
+            </span>
+            
+            <h4>Fulfillment</h4>
+            
+            <span class="singleSideReward"><p>Once the referral has been converted the reward is generated for the Referrer.</p></span>
+            
+            <span class="doubleSideReward"><p>Once the referral has been converted the reward is generated for the Referrer. By default the SaaSquatch system generates a reward for the Referred User when the referral is attributed.</p></span>
+            
+            <blockquote><strong>Tip:</strong> For some referral programs, for example when giving both sides a gift card, we recommend to generate the Referred User’s reward on conversion to reduce any potential fraud due to handing out a reward too early in the process.</blockquote>
+            
+            <span class="install-guide-hidden apibeforesignup apiaftersignup api">
+            <span class="install-guide-hidden apibeforesignup" >
+            <p>In order to know whether the person checking out was referred (and thus should receive a reward), use the squatch.js autofill method to lookup whether there is a referral cookie in their browser. If there is, then they have been referred and should have their reward applied.</p></span>
+            
+            <span class="install-guide-hidden apiaftersignup api" >
+            <p>The SaaSquatch system provides a number of webhook events you can <a href="https://docs.referralsaasquatch.com/api/methods/#create_webhook">subscribe</a> to, including for the creation of a reward for the Referrer, or Referred User. The `reward.created` event, with a `data.rewardSource` of `REFERRED` or `FRIEND_SIGNUP`, will notify you whenever a Referred User or Referrer reward is created for a participant in your program.</p>
+            
+            &emsp;<blockquote><strong>Please note:</strong> this only applies to the Referred User if they are not receiving their reward as part of signup/checkout.</blockquote>
+            
+            <p>Once you receive a webhook event for the reward, use the <a href="http://docs.referralsaasquatch.com/api/methods/#list_balances">List reward balances API call</a> to lookup the user’s available reward balance to confirm the balance.</p>
+            
+            <p>Use the user’s available balance to provide them their reward in your system.
+            
+            <p>After fulfilling each reward, make sure to mark these rewards as redeemed by debiting the value you fulfilled from their reward balance either through the <a href="https://docs.referralsaasquatch.com/api/methods/#debit_balance">API</a> or SaaSquatch Admin Portal. This will make sure that this amount cannot be redeemed again.</p>
+            </span>
+            </span>
+            
+            <span class="install-guide-hidden paymentProvider" >
+            <p>Most of the reward fulfillment process is handled automatically by SaaSquatch’s Stripe or Recurly integration:
+            
+            <p><strong>Referred User</strong><br>
+            When creating the Stripe/Recurly Subscription for the Referred User, apply the Referrer’s referral code to their subscription (it’s a valid Stripe/Recurly coupon). Use the Squatch JS Autofill method to pick up the Referrer’s referral code from the cookie in the Referred User’s browser.
+
+            <p>This will provide the Referred User their reward on their on their initial invoice.
+            
+            <p><strong>Referrer</strong><br>
+            Once the SaaSquatch system sees the Referred User’s closed invoice with the Referrer’s code applied as a coupon, a reward will automatically be generated for the Referrer, and applied to their Stripe/Recurly account as an invoice line item.</p>
+            </span>
+            
+            <span class="install-guide-hidden giftcard">
+            <p>The gift card reward for the Referrer (and Referred User if configured to receive a reward at conversion) will be fulfilled automatically through our <a href="https://docs.referralsaasquatch.com/success/gift-card-rewards/">GC Integration</a> using either Giftbit or Tangocard.</p>
+            </span>
+            
+            <span class="install-guide-hidden export"><p>A full list of outstanding reward balances for each of the users in your SaaSquatch program is available through the <a href="https://docs.referralsaasquatch.com/features/reports/#reward-balances-report">Reward Balances Report</a>, which can be downloaded through the SaaSquatch portal. 
+
+            <p>The information in this report can then be used to fulfill these outstanding rewards through the reward provider of your choice (typically by upload or import).
+            
+            <p>After fulfilling each reward, make sure to mark these rewards as redeemed in SaaSquatch, either through the SaaSquatch Admin Portal, or by using the <a href="http://docs.referralsaasquatch.com/api/methods/#debit_reward">Redeem a Single Reward API call</a>. This will make sure that the user cannot receive the reward again.</p>
+            </span>
+            
+            <span class="install-guide-hidden fueltank fueltankbeforesignup"><p>Each time a user in your program earns a fueltank reward a new unique code is assigned to them from the batch you configured for your program. These unique fueltank codes you have uploaded into your SaaSquatch program should be valid discount codes within your product/checkout.    
+                
+            <span class="install-guide-hidden fueltankbeforesignup">
+            <p>Use the Referred User widget to display their unique fueltank code before they have completed the checkout/signup process in your product.
+            
+            <p>The Referred User can then paste their unique fueltank code into the coupon field in your checkout to receive their reward.
+            </span>
+            <span class="install-guide-hidden fueltank">
+            <p>When the Referred User’s side of the referral is marked as converted, the reward for the Referrer is generated in the SaaSquatch system. The reward for the Referred User will also be generated at this point if your program is configured to provide a fueltank code reward to the Referred User at conversion.
+
+            <p>This unique code can then be found displayed in the widget, or as part of the Referral Complete email sent to the Referrer.
+            </span>
+            
+            </span>
+            
+        </div>
+        
+        <div class="projectplan">
+            <h3>Project Plan</h3>
+            
+            <h4>Technical Pieces</h4>
+            
+            <h5>Squatch.js</h5>
+            <ul>
+                <li>Tracking script behind login to create/update users in your program (and attribute referrals)
+                <li>Referral Widget script
+                    <ul><li>Embedded on dedicated page in your website and/or
+                        <li>Popup modal from entry in navigation dropdown or website footer
+                    </ul>
+                <li>Tracking script to convert referral from checkout confirmation page</li>
+                <span class="install-guide-hidden paymentProvider" ><li>Include the user's `paymentProviderId` to connect the user with their Stripe/Recurly account</li></span>
+            </ul>
+            
+            <h5>SaaSquatch REST API</h5>
+            <ul>
+                <li>To <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">register Referred Users</a> in your program. Use the <a href="https://docs.referralsaasquatch.com/developer/squatchjs/v2/reference/#autofill">squatch.js autofill method</a> to pickup the referral code from the cookie in the Referred User’s browser to attribute the referral back to the Referrer</li>
+                <span class="install-guide-hidden paymentProvider" ><ul><li>Include the user’s paymentProviderId to connect the user with their Stripe/Recurly account</li></ul></span>
+                <li>To convert the referral after the Referred User has hit the goalpost of your program.</li>
+                <li>To <a href="https://docs.referralsaasquatch.com/api/methods/#list_balances">lookup</a> and redeem rewards when reward fulfillment is being handled in your product.</li>
+            </ul>
+
+            <span class="install-guide-hidden mobileWebview mobileSDK" ><h5>Mobile App</h5>
+            <ul><li><a href="http://docs.referralsaasquatch.com/mobile/">Mobile SDK</a>, to create/update users from within your app. Use the <a href="http://docs.referralsaasquatch.com/mobile/branch-metrics/">Branch integration</a> to retrieve the referral code and attribute the referral back to the Referrer.</li>
+            <li>Mobile SDK, to display sharelinks and referral code to a user within your app</li>
+            <li><a href="http://docs.referralsaasquatch.com/mobile/widget/">Hosted Mobile Widget URL</a> to display the hosted referral widget within a webview in your app if you are not making use of the SDK</li>
+            </ul>
+            </span>
+            
+            <span class="install-guide-hidden apiaftersignup api" ><h5>Webhooks</h5>
+            <ul>
+                <li>Listen for the `reward.created` webhook events to know when to fulfill a user’s reward within your product</li>
+            </ul>
+            </span>
+
+            <p>These pieces together make up a full referral loop. When launching the referral program we suggest to test at least one complete loop and ensure everything displays in the SaaSquatch portal correctly. 
+            
+            <h4>Creative Assets to Review</h4>
+            
+            <ul><li>Default <a href="https://docs.referralsaasquatch.com/success/share-options/#share-messages">Share messaging</a>
+            <li><a href="https://docs.referralsaasquatch.com/success/touchpoints/#widgets">Referral Widget</a>
+            <ul>
+                <li>Copy 
+                <li>Design Customization
+            </ul>
+            <li><a href="https://docs.referralsaasquatch.com/topics/email/#email-notifications">Notification Emails</a>
+            <ul>
+                <li>Copy 
+                <li>Design Customization
+            </ul>
+            </ul>
+            
+            Details about widget design customization can be found in our <a href="https://docs.referralsaasquatch.com/themes/custom/">Designer Center</a>.
+
+            
+            
+        </div>
+        
+        <div class="installation">
+            <h3>Installation Steps</h3>
+            
+            <ol>
+            
+            <div class="install-guide-hidden giftcard export paymentProvider fueltank api">
+                <h3><li>Squatch JS Tracking Script</h3>
+                
+                <p>The squatch.js tracking script can be used to create/update participants within your referral program. This script runs in the background of the webpage and is designed not to display a widget.
+                
+                A number of uses of this tracking script include: 
+                <ul>
+                    <li>Run as part of signup completion to register new program participants. squatch.js will automatically make <a href="https://docs.referralsaasquatch.com/success/core-topics/#attribution">referral connections</a> if it detects a cookie from someone having clicked a referral link.
+                    <li>Placed on a number of pages behind your login to make sure you have registered all of your users, as well as to update information you have about them in their SaaSquatch profile.
+                    <li>When the goal post of your referral program is hit by the Referred User, SaaSquatch needs to be informed of this <a href="https://docs.referralsaasquatch.com/success/core-topics/#conversion">conversion</a>. This will kick off the reward creation for the Referrer (and Referred User if configured to also receive their reward at conversion).<br>Include the following in the Referred User’s user object to kick off this conversion process:
+                
+                <code>"referredBy": {
+                    <strong>"isConverted": true</strong>
+                  }</code>
+
+                </ul>
+                
+                <h4>Squatch JS Tracking Script Example</h4>
+                
+                <pre><code class="lang-js">&#60;script type="text/javascript">
+//Include squatch.js in your webpage
+!function(a,b){a("squatch","https://d2rcp9ak152ke1.cloudfront.net/assets/javascripts/v2/squatch.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]={},c[a].ready=function(b){c["_" + a].ready =  c["_" + a].ready || [];c["_" + a].ready.push(b);},e=document.createElement("script"),e.async=1,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
+squatch.ready(function() {		// when squatch.js is ready to use
+  squatch.init({
+      tenantAlias: '<span class="nocode exampleUserTenantAlias">{{tenant_alias}}</span>'		//configure squatch.js for the tenant you are using
+    });
+    var initObj = {		//object containing the init parameters for squatch.js
+        user: {		//the object for the user you want to upsert                              
+            id: 'abc_123',      
+            accountId: 'abc_123',       
+            email: 'john@example.com',               
+            firstName: 'John',       
+            lastName: 'Doe'<span class="nocode exampleUserLocale">,<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  locale: 'nl_NL'</span>
+        },
+    <span class="nocode exampleUserJWT"></span>
+    };
+  
+  //update/register a referral participant without displaying a widget 
+  squatch.api().upsertUser(initObj).then(function(response) {
+    user = response.user;
+  }).catch(function(err){
+    console.log(err);
+  });
+});
+&#60;/script></code></pre>
+                
+            </div>
+            
+            <div class="install-guide-hidden giftcard export paymentProvider fueltank api">
+            
+                <h3 class="install-step"><li>Referral Widget Script</h3>
+                
+                <p>The squatch.js Referral Widget script can be used to render a referral widget for a participant in your program. This widget is typically placed on your webpage behind your login. 
+
+                <p>From this widget the user is able share their unique sharelink with their network of friends through a number of social networks and share mediums.
+
+                <p>A number of possible uses for this Referral Widget script include:
+                <ul><li>Embedding a widget behind your website’s login on an “account” or “Referral” page. This page provides your users with a constant place in your product where they can interact with your referral program.</li> 
+                <li>As a popup widget, triggered from a button in your site’s navigation menu. This can be helpful in making the referral program accessible to your users wherever they are on your site.</li>
+                <li>Upsert: The referral widget script, like the squatch.js tracking script, is able to create new SaaSquatch users, update information about a user in your SaaSquatch program, create referral connections, and convert referrals.</li>
+                </ul>
+
+                <p>The Referral widget script (like the Referral Tracking Script) will also automatically make <a href="https://docs.referralsaasquatch.com/success/core-topics/#attribution">referral connections</a> if it detects a cookie from someone having clicked a referral link.</p>
+                
+                <h4>Squatch JS Referral Widget Script Example</h4>
+                
+                <div class="row-fluid">
+                    <div class="span6">
+                        <pre><code>&#60;-- Insert this div on the page where the widget is suppose to be placed. -->
+&#60;div class="squatchembed">&#60;/div></code></pre>
+                    </div>
+                    <div class="span6">
+                        <pre><code>&#60;-- Insert this div on the page where the widget is suppose to be placed. -->
+&#60;button class="squatchpop">Referral Discount&#60;/button></code></pre>
+                    </div>
+                </div>
+                            
+                
+                
+                
+                <pre><code>&#60;script type="text/javascript">
+                
+!function(a,b){a("squatch","https://d2rcp9ak152ke1.cloudfront.net/assets/javascripts/v2/squatch.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]={},c[a].ready=function(b){c["_" + a].ready =  c["_" + a].ready || [];c["_" + a].ready.push(b);},e=document.createElement("script"),e.async=1,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
+
+// when squatch.js is ready to use
+window.squatch.ready(function(){
+
+  //configure squatch.js for the tenant you are using       
+  squatch.init({
+      tenantAlias: '<span class="nocode exampleUserTenantAlias">{{tenant_alias}}</span>'
+  });
+
+  //object containing the init parameters for squatch.js
+  var initObj = {
+
+    //the object for the user you want to upsert
+    user: {                               
+      id: 'abc_123',                      
+      accountId: 'abc_123',       
+      email: 'john@example.com',                
+      firstName: 'John',       
+      lastName: 'Doe',
+      referable: false<span class="nocode exampleUserLocale">,<br>&emsp;&emsp;  locale: 'nl_NL'</span>  
+    },
+    engagementMedium: 'EMBED',
+    widgetType: 'REFERRER_WIDGET',
+    <span class="nocode exampleUserJWT"></span>
+  };
+  
+  //update/register a referral participant and display a widget
+  squatch.widgets().upsertUser(initObj).then(function(response) {
+    user = response.user;
+  }).catch(function(error){
+    console.log(error);
+  }); 
+});
+&#60;/script></code></pre>
+            
+            </div>
+            
+            
+            <div class="install-guide-hidden giftcard export paymentProvider fueltank api">
+            
+                <h3 class="install-step"><li>Participant Upsert through API</h3>
+                
+                <p>The <a href="http://docs.referralsaasquatch.com/api/">SaaSquatch REST API</a> can be used to create/update participants in your referral program. 
+
+                <p>Use the <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">Open Endpoint Upsert User API</a> call to upsert these participants.
+                
+                <p>When creating/updating a user in SaaSquatch by API you will need to explicitly pass in a referral code in order to establish a referral connection. As the referral cookie in the Referred User’s browser is only available client-side, you can use the squatch.js autofill method (run client-side at signup) to retrieve the referral code from the cookie and then pass it to your backend to include in your API call. 
+                
+                <p>The format for explicitly including the referral code of the Referrer to attribute a referral is as follows:
+                <code>"referredBy": {
+                    "code": "JANEDOE"
+                  }</code>
+                
+                <p>When the goal post of your referral program is hit by the Referred User, SaaSquatch needs to be informed of this <a href="https://docs.referralsaasquatch.com/success/core-topics/#conversion">conversion</a>. This will kick off the reward creation for the Referrer (and Referred User if configured to also receive their reward at conversion). 
+                
+                <p>Include the following in the Referred User’s user object to kick off this conversion process:
+                <code>"referredBy": {
+                    "isConverted": true
+                  }</code>
+
+                
+                <h4>userUpsert API method Example</h4>
+                
+                Type: <code>PUT</code>
+URL: <code>https://app.referralsaasquatch.com/api/v1/<span class="nocode exampleUserTenantAlias">{{tenant_alias}}</span>/open/account/abc_123/user/abc_123</code>
+    
+                
+                <div class="row-fluid">
+                    <div class="span6">Example Request</div>
+                    <div class="span6">Example Response</div>
+                </div>
+                
+                
+                <div class="row-fluid">
+                    <div class="span6">
+                    
+                    
+                    <pre><code class="lang-json">{
+    "id": "abc_123",
+    "accountId": "abc_123",
+    "email": "john@example.com",
+    "firstName": "John",
+    "lastName": "Doe",<span class="nocode exampleUserLocale"><br>&emsp;&emsp; "locale": "nl_NL",</span>
+    "referredBy": {
+        "code": "JANEDOE"
+    }
+}</code></pre>
+                    
+                    </div>
+                    <div class="span6">
+                        
+                        
+                        <pre><code class="lang-json">{
+    "id": "abc_123",
+    "accountId": "abc_123",
+    "email": "john@example.com",
+    "firstName": "John",
+    "lastName": "Doe",<span class="nocode exampleUserLocale"><br>&emsp;&emsp; "locale": "nl_NL",</span>
+    "referralCode": "JOHNDOE",
+    "referredBy": {
+        "code": "JANEDOE"
+    },
+    "shareLinks": {
+        //full list of the user's share links
+    }
+}</code></pre>
+    
+                        
+                    </div>
+                </div>
+            
+            
+            </div>
+            
+            <div class="install-guide-hidden giftcard export paymentProvider fueltank api">
+                
+                <h3 class="install-step"><li>Squatch.js autofill method</h3>
+                
+                <p>The squatch.js autofill method can be used to check for the existence of a saasquatch referral cookie within the Referred User’s browser. This cookie contains the referral code of the Referrer, and if present, means the Referred Visitor who followed the share link, and ended up with the cookie in their browser, has been referred.</p>
+                
+                <p>This squatch.js autofill method has a number of primary uses:
+                <ul><li>When looking to personalize the landing page experience for a Referred Visitor. Using the referral code retrieved by squatch.js autofill you can <a href="https://docs.referralsaasquatch.com/api/methods/#open_get_user_by_code">lookup who the referrer is</a> in order to include things like the Referrer’s <a href="https://docs.referralsaasquatch.com/success/referral-program-optimization/#personalized-landing-page">name in the landing page</a> to show to the Referred Visitor.</li>
+                <li>Use in conjunction with registering users in your SaaSquatch program from your back-end using the API (as the referral cookie is only available client-side).</li>
+                <li>Checking if a user was referred when looking to apply a discount at checkout before signup (The cookie will be consumed by a squatch.js tracking script so make sure this autofill lookup is before they are registered in SaaSquatch).</li>
+                </ul>
+                
+                <h4>autofill Example</h4>
+                
+                <p>The following example retrieves the referral code from the referral cookie and then sets it as the value of an HTML element (a form field for example) with the ID `my_coupon`:
+                
+                <pre><code>&#60;script type="text/javascript">
+
+!function(a,b){a("squatch","https://d2rcp9ak152ke1.cloudfront.net/assets/javascripts/v2/squatch.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]={},c[a].ready=function(b){c["_" + a].ready =  c["_" + a].ready || [];c["_" + a].ready.push(b);},e=document.createElement("script"),e.async=1,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
+
+squatch.ready(function() { 
+
+  var element = document.getElementById('my_coupon');
+  
+  squatch.init({
+    tenantAlias: "<span class="nocode exampleUserTenantAlias">{{tenant_alias}}</span>"
+  });
+  
+  squatch.api().squatchReferralCookie().then(function(response) {
+    element.value = response.code;
+  });
+  
+});
+
+&#60;/script></code></pre>
+
+            </div>    
+                
+            <div class="install-guide-hidden mobileWebview">
+                
+                <h3 class="install-step"><li>Mobile App Webview</h3>
+                
+                <h4>Hosted Webview Widget Example</h4>
+                
+                <pre><code>https://app.referralsaasquatch.com/a/<span class="nocode exampleUserTenantAlias">{{tenant_alias}}</span>/widgets/mobilewidget
+?<span class="nocode exampleUserJWT_hosted"></span>accountId=abc_123
+&userId=abc_123
+&email=john%40example.com
+&firstName=John
+&lastName=Doe
+&referralCode=JANEDOE<span class="nocode exampleUserLocale"><br>&locale=nl_NL</span>
+&paymentProviderId=null</code></pre>
+
+                Full details about our mobile tracking script/widget are available in our <a href="https://docs.referralsaasquatch.com/mobile/widget/reference/">reference document</a>.
+
+                <blockquote><strong>Please note:</strong> Make sure to encode special characters.</blockquote> 
+
+            
+            </div>
+            
+            <div class="install-guide-hidden mobileSDK">
+                
+                <h3 class="install-step"><li>Mobile App - Native SDK</h3>
+                
+                <p>The SaaSquatch Mobile SDK provides very flexible options for integrating your referral program into your app. Using the SaaSquatch Mobile SDK you have full control over where the touchpoints are for the referral program in your app, and what information is displayed to the referral program participants.
+
+                <p>The SaaSquatch Mobile SDK is built on top of the <a href="https://docs.referralsaasquatch.com/api/openendpoints/">SaaSquatch Open Endpoint API</a> and provides much of the same functionality, but wrapped for native use in iOS and Android apps.
+                
+                <p>The following sections provide examples for a number of common components used when building a referral experience using the SaaSquatch SDK.
+                
+                <h4>Upsert User</h4>
+                <p>You can use the SaaSquatch Mobile SDK to create/update referral participants from within your Mobile app.
+                
+                <p>Full details about the available arguments for these methods can be found in our API reference for the <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">Open Endpoint userUpsert method</a>.
+                
+                <p>Some example uses for this method include attributing a referral, marking a user as not referable, and converting a referral:
+                
+                <p>To attribute a referral, include the Referrer’s referral code in the Referred User’s user object as follows:
+                
+                <code>"referredBy": [
+                    "code": "JANEDOE"
+                  ]</code>
+
+                <p>Use the <a href="http://docs.referralsaasquatch.com/mobile/branch-metrics/">Branch integration</a> to retrieve the referral code and attribute the referral back to the Referrer.
+
+                <p>Along with being able to attribute referrals, the SDK provides the ability to mark users as non-referable. This is typically something applied to users who were not referred when they signed up so that they do not accidentally have a referral attributed to them later on.
+ 
+                <p>This referability can be set by including the <code>"referable": false</code> flag in a user upsert.
+
+                <p>When the goal post of your referral program is hit by the Referred User, SaaSquatch needs to be informed of this <a href="https://docs.referralsaasquatch.com/success/core-topics/#conversion">conversion</a>. This will kick off the reward creation for the Referrer (and Referred User if configured as such). 
+
+                <p>Include the following in the Referred User’s user object to kick off this conversion process:
+
+                <code>"referredBy": [
+                    "isConverted": true
+                  ]</code>
+
+                
+                <strong>Example userUpsert:</strong>
+<pre><code>// This is your tenant alias which identifies you with SaaSquatch
+let tenant = "<span class="nocode exampleUserTenantAlias">{{tenant_alias}}</span>"
+
+SaaSquatch
+let userId = "abc_123"
+let accountId = "abc_123"
+
+let userInfo: [String: AnyObject] = [
+    "id": userId,
+    "accountId": accountId,
+    "email": "john@example.com",
+    "firstName": "John",
+    "lastName": "Doe",<span class="nocode exampleUserLocale"><br>&emsp;&emsp; "locale": "nl_NL",</span>
+    "referralCode": "JOHNJOE",
+    "referredBy":[
+      "code": "JANEDOE",
+      "isConverted": true
+    ]
+]</code></pre>
+
+                <p>With this information compiled, the user can now be created/updated in SaaSquatch using this call:
+
+<pre><code>// Upsert the user
+Saasquatch.userUpsert(tenant, withUserID: userId, withAccountID: accountId, withToken: token, withUserInfo: userInfo,
+    completionHandler: {(userInfo: AnyObject?, error: NSError?) in
+
+        // Code to be executed after the async call returns
+})</code></pre>
+
+                <h4>Lookup User</h4>
+                <p>The userForTenant function can be used to lookup the available information about the user in the SaaSquatch system.
+                
+                <p>An example of what this call looks like:
+
+<pre><code>public class func userForTenant(
+        tenant: String,
+        withUserID userID: String,
+        withAccountID accountID: String,
+        withSecret secret: String,
+        completionHandler: (userInfo: AnyObject?, error: NSError?) -> Void)</code></pre>
+
+                <p>If successful this will return the user object as outlined in the Open Endpoints <a href="http://docs.referralsaasquatch.com/api/methods/#open_get_user">Get User</a> call.
+
+                <h4>Rewards</h4>
+                <p>To display the current reward balance for a user in your SaaSquatch project, use the <a href="https://docs.referralsaasquatch.com/api/methods/#list_balances">Lookup Reward Balance API</a> call. This will return the current reward balance for the account
+
+                <h4>Referrals</h4>
+                <p>To display a list of all the referrals that a user has made you can use the <a href="https://docs.referralsaasquatch.com/mobile/ios/docs-swift/Classes/Saasquatch.html#/s:ZFC10saasquatch10Saasquatch22listReferralsForTenantFMS0_FTSS10withSecretSS21forReferringAccountIDGSqSS_18forReferringUserIDGSqSS_22beforeDateReferralPaidGSqSS_23beforeDateReferralEndedGSqSS_28withReferredModerationStatusGSqSS_28withReferrerModerationStatusGSqSS_9withLimitGSqCSo8NSString_10withOffsetGSqS1__17completionHandlerFT8userInfoGSqPSs9AnyObject__5errorGSqCSo7NSError__T__T_">listReferralsForTenant</a> function.
+                
+                <p>This call lists all referrals made on this tenant. Include the current user’s account and user id to only list those who were referred by this user.
+
+<pre><code>Saasquatch.listReferralsForTenant(tenant, withToken: token, forReferringAccountID: bobsAccountId, forReferringUserID: bobsUserId, beforeDateReferralPaid: nil, beforeDateReferralEnded: nil, withReferredModerationStatus: nil, withReferrerModerationStatus: nil, withLimit: nil, withOffset: nil,
+    completionHandler: {(userInfo: AnyObject?, error: NSError?) in
+
+        // Check the error
+        if (error != nil) {
+            //handle errors
+        }
+        // Parse the list of referrals
+        guard let referrals: NSArray = userInfo!["referrals"] as? NSArray else {
+            return
+        }
+        for referral in referrals {
+            guard let referredUser = referral["referredUser"] as? NSDictionary,
+                let firstName = referredUser["firstName"] as? NSString,
+                let referredReward = referral["referredReward"] as? NSDictionary,
+
+                // In this case, we are giving out only percent discount rewards, so we know this field will exist
+                let discountPercent = referredReward["discountPercent"] as? NSInteger else {
+                    break
+                }
+            // Do something with the referral information
+        }
+    })</code></pre>
+
+            
+            </div>
+            
+            <div class="install-guide-hidden fueltankbeforesignup apibeforesignup">
+                <h3 class="install-step"><li>Reward Fulfillment - Referred User (before signup)</h3>
+                
+                <p>The following outlines the process for the Referred User to receive their reward, for being referred, in the form of a discount at checkout, before their signup is completed.
+
+                <p>In order to know whether the person checking out was referred (and thus should receive a reward), use the squatch.js autofill method to lookup whether there is a referral cookie in their browser.  If there is, then they have been referred and should be rewarded. Apply this reward as part of their checkout process in your product/store.
+                
+                <p>Details about this autofill method can be found in the autofill step of this install guide.
+                
+                <p>Once this reward has been fulfilled by you at checkout, register this new referred user in your SaaSquatch program, and attribute their referral back to the Referrer using the referral code from the cookie.
+
+            
+            </div>
+            
+            <div class="install-guide-hidden paymentProvider">
+                <h3 class="install-step"><li>Reward Fulfillment Payment Provider</h3>
+                
+                <h4>Referred User</h4>
+                <p>When using either our Stripe or Recurly integrations the Referred User will receive their reward for being referred in the form of a discount at checkout, before their signup is completed.
+                
+                <p>In order to know whether the person checking out was referred (and thus should receive a reward), use the <a href="https://docs.referralsaasquatch.com/developer/squatchjs/v2/reference/#autofill">Squatch JS Autofill</a> method to pick up the Referrer’s referral code from the cookie in the Referred User’s browser. If the cookie is present, then they have been referred and should have their reward applied.
+                
+                <p>When creating the Stripe/Recurly Subscription for the Referred User, apply the Referrer’s referral code to their subscription (it’s a valid Stripe/Recurly coupon). 
+                
+                <p>This will provide the Referred User their reward on their on their initial invoice.
+                
+                <p>Once the referred user has finished their transaction, make sure to include their Payment Provider ID when you create the user in SaaSquatch. This will kick off the reward fulfillment process for the Referrer.
+                
+                <h4>Referrer</h4>
+                <p>Once the SaaSquatch system sees the Referred User’s closed invoice with the Referrer’s code applied as a coupon, a reward will automatically be generated for the Referrer, and applied to their Stripe/Recurly account as an invoice line item. 
+
+            
+            </div>
+            
+            <div class="install-guide-hidden export fueltank api">
+                <h3 class="install-step"><li>Reward Fulfillment - Through SaaSquatch Account</h3>
+                
+                This step outlines the process for fulfilling referral rewards in the following cases: 
+                <ul><li>For the Referrers, as they will always receive their rewards through their SaaSquatch account</li>
+                <li>For Referred Users, when your program is configured for their rewards to be fulfilled through their SaaSquatch account after signup, or at the point of conversion (rather than by you at checkout)</li>
+                </ul>
+                
+                <p>The SaaSquatch system provides a number of webhook events you can <a href="https://docs.referralsaasquatch.com/api/methods/#create_webhook">subscribe</a> to, including one for the creation of a reward for the Referrer, or Referred User. The `reward.created` event, with a `data.rewardSource` of `FRIEND_SIGNUP` or `REFERRED`, will notify you whenever a Referrer’s, or Referred User’s reward is created for a participant in your program.
+                
+                <p>Once you receive a webhook event for the referral reward, use the <a href="http://docs.referralsaasquatch.com/api/methods/#list_balances">List reward balances API</a> call to lookup the user’s available reward balance to confirm their existing balance.
+                
+                <p>Depending on the type of reward configured to be provided to the user the response for the following API will be different. Full details about the possible fields in the <a href="http://docs.referralsaasquatch.com/api/methods/#list_balances">List reward balances API</a> call response can be found in the SaaSquatch API reference.</p> 
+                
+                
+                Type: <code>GET</code>
+URL: <code>https://app.referralsaasquatch.com/api/v1/<span class="nocode exampleUserTenantAlias">{{tenant_alias}}</span>/reward/balance?accountId=abc_122&userId=abc_122</code>
+                
+                <div class="row-fluid">
+                    <div class="span12">
+                    
+                    
+                    <pre><code class="lang-json">{
+    "totalDiscountPercent": 10,
+    "referrerDiscountPercent": 10,
+    "referredDiscountPercent": 0,
+    "type": "PCT_DISCOUNT"
+}
+</code></pre>
+                    
+                    </div>
+                </div>
+                
+                <p>The user’s outstanding balance can now be applied in your system. 
+
+                <p>Once the reward balance has been applied in your system, be sure to <a href="https://docs.referralsaasquatch.com/api/methods/#debit_balance">redeem</a> it from their SaaSquatch account so that it cannot be used again:
+                
+                Type: <code>POST</code>
+URL: <code>https://app.referralsaasquatch.com/api/v1/<span class="nocode exampleUserTenantAlias">{{tenant_alias}}</span>/credit/bulkredeem</code>
+
+                
+                <div class="row-fluid">
+                    <div class="span6">JSON Request</div>
+                    <div class="span6">Example Response</div>
+                </div>
+                
+                
+                <div class="row-fluid">
+                    <div class="span6">
+                    
+                    
+                    <pre><code class="lang-json">{
+    "accountId": "abc123",
+    "unit": "cents",
+    "amount": 200
+}</code></pre>
+                    
+                    </div>
+                    <div class="span6">
+                        
+                        
+                        <pre><code class="lang-json">{
+    "creditRedeemed": 200,
+    "creditAvailable": 0,
+    "unit": "cents"
+}
+</code></pre>
+    
+                        
+                    </div>
+                </div>
+            
+
+
+
+
+
+
+
+            </div>
+            
+            <div class="install-guide-hidden giftcard export paymentProvider fueltank api">
+                <h3 class="install-step"><li>Optional Pieces</h3>
+            
+            </div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            </ol>
+        </div>
+        
+    </div>
+    
+    
+</section>
+
+<script>
+
+
+
+
+
+
+
+
+//pickup arguements from URL
+var getQueryString = function ( field, url ) {
+    var href = url ? url : window.location.href;
+    var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
+    var string = reg.exec(href);
+    return string ? string[1] : null;
+};
+
+
+
+//list of values that can be passed into the page by the form, determining what should be shown of the install guide
+var displayList = {};
+
+var temp = document.getElementById("businessModel");
+temp.value = getQueryString('businessModel');
+displayList["businessModel"] = temp.value;
+
+var temp = document.getElementById("tenantAlias");
+temp.value = getQueryString('tenantAlias');
+displayList["tenantAlias"] = temp.value;
+
+var temp = document.getElementById("apiKey");
+temp.value = getQueryString('apiKey');
+displayList["apiKey"] = temp.value;
+
+var temp = document.getElementById("referredUserfulfillmentMethod");
+temp.value = getQueryString('referredUserfulfillmentMethod');
+displayList["referredUserfulfillmentMethod"] = temp.value;
+
+var temp = document.getElementById("referrerFulfillmentMethod");
+temp.value = getQueryString('referrerFulfillmentMethod');
+displayList["referrerFulfillmentMethod"] = temp.value;
+
+var temp = getQueryString('mobileSDK');
+if (temp == "mobileSDK"){
+    document.getElementById("mobileSDK").checked = true;
+    displayList.mobileSDK = "mobileSDK";
+}
+
+var temp = getQueryString('mobileWebview');
+if (temp == "mobileWebview"){
+    document.getElementById("mobileWebview").checked = true;
+    displayList.mobileWebview = "mobileWebview";
+}
+
+var temp = getQueryString('locale');
+if (temp == "locale"){
+    document.getElementById("locale").checked = true;
+    displayList.locale = "locale";
+}
+
+//var tenantAlias = getQueryString('tenantAlias'); 
+//var apiKey = getQueryString('apiKey'); 
+
+
+
+//if there is no query string parameter, then hide the TOC till there is
+if (displayList.length){
+    temp = document.getElementById("toc_div");
+    temp.style.display = "none";
+}
+
+
+
+
+//console.log(displayList);
+
+//displaying elements which were hidden by default
+for( key in displayList){
+    console.log(displayList[key]);
+    //console.log(key);
+    
+    
+    
+    //get list of elements with a class that needs to be displayed
+    var temp = document.getElementsByClassName(displayList[key]);
+    //console.log("temp: ",temp);
+    
+    if (temp.length > 0){
+        
+        //loop through each element with the given class that needs to be shown
+        for (element=0; element < temp.length; element++){
+            //console.log("element: ",element);
+            console.log("temp[element]: ",temp[element]);
+            
+            temp[element].style.display = "inline";
+        }
+        
+    }
+    
+}
+
+
+if(displayList.referredUserfulfillmentMethod == "none"){
+    var temp = document.getElementsByClassName("singleSideReward");
+    
+    for (element=0; element < temp.length; element++){
+            
+        temp[element].style.display = "inline";
+    }
+    
+    var temp = document.getElementsByClassName("doubleSideReward");
+    
+    for (element=0; element < temp.length; element++){
+            
+        temp[element].style.display = "none";
+    }
+    
+}
+else {
+    var temp = document.getElementsByClassName("doubleSideReward");
+    
+    for (element=0; element < temp.length; element++){
+            
+        temp[element].style.display = "inline";
+    }
+    
+}
+
+
+
+//if the guide supports multi-locale, display the example locale
+if(displayList.locale){
+    
+    temp = document.getElementsByClassName("exampleUserLocale");
+    
+    for (i = 0; i < temp.length; i++) { 
+        //console.log(temp[i])
+        temp[i].style.display = "inline";
+    }
+    
+    
+}
+
+//display pre-filled tenant alias's where applicable
+if (displayList.tenantAlias){
+    temp = document.getElementsByClassName("exampleUserTenantAlias");
+    
+    //console.log(temp);
+    
+    for (i = 0; i < temp.length; i++) { 
+        //console.log(temp[i])
+        temp[i].style.display = "inline";
+        temp[i].innerHTML = displayList.tenantAlias;
+    }
+}
+
+
+
+//console.log(displayList.tenantAlias);
+
+
+function buildJWT(jwtClass){
+    
+    var oHeader = {alg: 'HS256', typ: 'JWT'};
+    var oPayload = {
+        user: {	                   
+            id: 'abc_123',      
+            accountId: 'abc_123',       
+            email: 'john@example.com',               
+            firstName: 'John',       
+            lastName: 'Doe',
+        }
+    };
+    
+    //console.log(displayList.locale);
+    
+    //if the guide supports multi-locale, include the example locale in the generated JWT
+    if(displayList.locale && jwtClass != "exampleUserJWT_hosted"){
+        oPayload.user.locale = 'nl_NL';
+    }
+    
+    //console.log(oPayload);
+    
+    // Sign JWT
+    var sHeader = JSON.stringify(oHeader);
+    var sPayload = JSON.stringify(oPayload);
+    var sJWT = KJUR.jws.JWS.sign("HS256", sHeader, sPayload, displayList.apiKey);
+    
+    //console.log(sJWT);
+    
+    
+    //display example JWTs where applicable
+    temp = document.getElementsByClassName(jwtClass);
+    
+    //console.log(temp);
+    
+    for (i = 0; i < temp.length; i++) { 
+        //console.log(temp[i])
+        temp[i].style.display = "inline";
+        if (jwtClass == "exampleUserJWT_hosted"){
+            temp[i].innerHTML = "jwt=" + sJWT + "<br>&";
+        }
+        else {
+            temp[i].innerHTML = "jwt: '" + sJWT + "'";
+        }
+        
+    }
+}
+
+
+//if the tenant alias and API key have been included, fill them in using the `
+if (displayList.apiKey && displayList.apiKey != ''){
+    
+    
+    buildJWT("exampleUserJWT")
+    buildJWT("exampleUserJWT_hosted")
+    
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+function h3TOC(currentHeading){
+    
+    //console.log("it contains the class ", currentHeading);
+	    
+    var liNode = document.createElement('LI');
+    
+    liNode.style.fontSize = "17.5px";
+    liNode.style.fontWeight = "bold";
+    
+    console.log(currentHeading)
+    for (var j = 0, len = currentHeading.childNodes.length ; j < len ; ++j) {
+        console.log(currentHeading.childNodes[0])
+        console.log(currentHeading.childNodes[1])
+        if (currentHeading.childNodes[j].tagName == "A"){
+            console.log(currentHeading.childNodes[j].href)
+            //TODO: set the href as the link for the new TOC element
+        }
+    }
+    
+    
+    liNode.appendChild(document.createTextNode(currentHeading.textContent));
+    
+    prevNode = liNode;
+    
+    cursorNode.appendChild(liNode);
+    
+}
+
+function h4TOC(currentHeading){
+    
+    //console.log("it contains the class ", currentHeading);
+	    
+    var olNode = document.createElement('OL')
+    
+    
+    
+    olNode.type="a";
+    
+    var liNode = document.createElement('LI');
+    
+    liNode.style.fontSize = "14px";
+    liNode.style.fontWeight = "bold";
+    
+    liNode.appendChild(document.createTextNode(currentHeading.textContent));
+    
+    olNode.appendChild(liNode);
+    
+    prevNode.appendChild(olNode);
+    
+}
+
+var TOC = document.getElementById('toc_overview'),
+headings = document.querySelectorAll('h4, h5'),
+cursorNode = TOC,
+prevNode = TOC;
+
+for (var i = 0, len = headings.length ; i < len ; ++i) {
+	var currentHeading = headings[i];
+	
+	
+	
+	//console.log(currentHeading.parentNode);
+	//console.log(currentHeading.parentNode.className);
+	
+	/*
+	if (currentHeading.parentNode.classList.contains("install-guide-hidden")){
+	    console.log("it contains the class")
+	    
+	}
+	*/
+	
+	//console.log(currentHeading.parentNode.style);
+	//console.log(currentHeading.parentNode.display);
+	
+	if (currentHeading.tagName == 'H4' && currentHeading.parentNode.classList.contains("projectoverview")){
+	    
+	    
+	    h3TOC(currentHeading)
+	    
+	}
+// 	else if (currentHeading.tagName == 'H5' && currentHeading.parentNode.classList.contains("projectoverview")){
+	    
+// 	    h4TOC(currentHeading)
+	    
+// 	}
+	
+}
+
+var TOC = document.getElementById('toc_plan'),
+headings = document.querySelectorAll('h4, h5'),
+cursorNode = TOC,
+prevNode = TOC;
+
+for (var i = 0, len = headings.length ; i < len ; ++i) {
+	var currentHeading = headings[i];
+	
+	
+	
+	
+	
+	if (currentHeading.tagName == 'H4' && currentHeading.parentNode.classList.contains("projectplan")){
+	    
+	    
+	    h3TOC(currentHeading)
+	    
+	}
+
+	
+}
+
+
+
+
+var TOC = document.getElementById('toc_install'),
+headings = document.querySelectorAll('h3, h4'),
+cursorNode = TOC,
+prevNode = TOC;
+
+
+for (var i = 0, len = headings.length ; i < len ; ++i) {
+	var currentHeading = headings[i];
+	
+	
+	
+	//console.log(currentHeading.parentNode);
+	//console.log(currentHeading.parentNode.className);
+	
+	/*
+	if (currentHeading.parentNode.classList.contains("install-guide-hidden")){
+	    console.log("it contains the class")
+	    
+	}
+	*/
+	
+	//console.log(currentHeading.parentNode.style);
+	//console.log(currentHeading.parentNode.display);
+	
+	if (currentHeading.tagName == 'H3' && currentHeading.parentNode.classList.contains("install-guide-hidden") && currentHeading.parentNode.style.display == 'inline'){
+	    
+	    
+	    h3TOC(currentHeading)
+	    
+	}
+	else if (currentHeading.tagName == 'H4' && currentHeading.parentNode.classList.contains("install-guide-hidden") && currentHeading.parentNode.style.display == 'inline'){
+	    
+	    h4TOC(currentHeading)
+	    
+	}
+	
+}
+	
+
+
+
+
+
+
+</script>
+
+{% endblock content %}
